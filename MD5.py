@@ -21,6 +21,7 @@ It truely would not have been possible without them.
 '''
 
 import math
+from State_Object import Internal_St as InternalState
 
 #  Input handling functions
 
@@ -97,55 +98,6 @@ def padTo448Bits():
             for i in range(length_to_go):
                 message_array.append(0x00000000)
 
-          
-#  Digest Functions
-def wordAdd(word1, word2):
-    tempWord = word1 + word2
-    return tempWord % 0x100000000
-
-def rotate(tempWord, i):
-    # The most significant bits after the bits have been circularly left shifted.
-    mostSigBits = (tempWord << R[i]) % 0x100000000
-    # The least significant bits after the bits have been circularly left shifted. The Python "Order of Operations" makes parentisies unessicary  in this line. 
-    leastSigBits = tempWord >> 32 - R[i]
-    return mostSigBits | leastSigBits
-
-def redBox(tempWord, b, i):
-    tempWord = wordAdd(tempWord, K[i])
-    tempWord = rotate(tempWord, i)
-    tempWord = wordAdd(tempWord, b)
-    return tempWord
-
-def bitwiseFunc(b, c, d, i):
-    try:
-        if 0 <= i <= 15:
-            return (b & c) | ((~b) & d)
-        if 16 <= i <= 31:
-            return (d & b) | ((~d) & c)
-        if 32 <= i <= 47:
-            return b ^ c ^ d
-        else:
-            return c ^ (b | (~d))
-    except:
-        print("An unexpected error has occured. The bitwise Funcion cannot be compleated.")
-
-def combine(a, word, b, c, d, i):
-    tempWord = bitwiseFunc(b, c, d, i)
-    tempWord = wordAdd(tempWord, a)
-    tempWord = wordAdd(tempWord, word) 
-    tempWord = redBox(tempWord, b, i)
-    return tempWord
-
-def iterate(curr_state, word, i):
-    curr_state()
-    cp = b
-    dp = c
-    ap = d
-    bp = combine(a, word, b, c, d, i)
-    a = ap
-    b = bp
-    c = cp
-    d = dp
 
 
 '''
@@ -207,6 +159,10 @@ subList1 = [7, 12, 17, 22]
 subList2 = [5, 9, 14, 20]
 subList3 = [4, 11, 16, 23]
 subList4 = [6, 10, 15, 21]
+
+
+# Digest State
+digest = InternalState(a, b, c, d)
 
 
 #  Initial setup functions.
@@ -311,6 +267,17 @@ if array_length <= 14:
     
     #Start iteration loop as normal. This might go outside of the if, else statement later, but would still have to be in the "block loop".
     #Celebration comment!! I have finally gotten to implimenting the iteration loop itself. Hurray!!
+    for i in range(64):
+        if i <= 15:
+            word = message_array[i]
+        if 16 <= i <= 31:
+            word = message_array[i%16]
+        if 32 <= i <= 47 :
+            word = message_array[(i*7)%16]
+        else:
+            word = message_array[(i*5)%16]
+
+        iterate(a, b, c, d, word, i)
     
 else:
     #The array needs to be split into two.
