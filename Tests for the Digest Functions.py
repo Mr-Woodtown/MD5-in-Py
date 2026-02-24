@@ -1,13 +1,20 @@
-from MD5 import *
+from State_Object_definition import Internal_St as InternalState
 import random
 
 #The UTF-8 encoding of WSAD
 myWord = 0x57415344
 #print( hex(message) )
 
-interal_state = Internal_St()
+a = 0x67425301
+b = 0xEDFCDA45
+c = 0x98CDADFE
+d = 0x13DCE476
+
+
+internal_state = InternalState(0x67425301,0xEDFCDA45,0x98CDADFE,0x13DCE476)
 
 print(f"{hex(a)} {hex(b)} {hex(c)} {hex(d)}")
+print(internal_state)
 reset_tup = (a, b, c, d)
 tempWord = 0
 
@@ -27,8 +34,9 @@ itera = 0
 cp = b
 dp = c
 ap = d
-tempWord = combine(a, myWord, b, c, d, itera)
+tempWord = internal_state.combine(a, myWord, b, c, d, itera)
 a = ap
+
 b = tempWord
 c = cp
 d = dp

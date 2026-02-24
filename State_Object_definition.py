@@ -1,8 +1,7 @@
 #stands for internal state
 class Internal_St:
-	self.i = 0
-
 	def __init__(self, a, b, c, d):
+		self.i = 0
 		self.a = a
 		self.b = b
 		self.c = c
@@ -43,14 +42,14 @@ class Internal_St:
 	    except:
 	        print("An unexpected error has occured. The bitwise Funcion cannot be compleated.")
 
-	def combine(a, word, b, c, d, i):
+	def combine(self, a, word, b, c, d, i):
 	    tempWord = bitwiseFunc(b, c, d, i)
 	    tempWord = wordAdd(tempWord, a)
 	    tempWord = wordAdd(tempWord, word) 
 	    tempWord = redBox(tempWord, b, i)
 	    return tempWord
 
-	def iterate(a, b, c, d, word, i):
+	def iterate(self, a, b, c, d, word, i):
 	    cp = b
 	    dp = c
 	    ap = d
@@ -61,7 +60,7 @@ class Internal_St:
 	    d = dp
 	    i += 1
 
-	def new_round():
+	def new_round(self):
 		i = 0
 
 
